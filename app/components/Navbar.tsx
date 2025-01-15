@@ -1,12 +1,21 @@
 "use client";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { Layers } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { checkAndAddUser } from "../action";
 
 const Navbar = () => {
   const pathName = usePathname();
+  const { user } = useUser();
   const navLinks = [{ href: "/", label: "Factures" }];
+
+  useEffect(() => {
+    if (user?.primaryEmailAddress?.emailAddress && user.fullName) {
+      checkAndAddUser(user?.primaryEmailAddress?.emailAddress, user.fullName);
+    }
+  }, [user]);
 
   const isActiveLink = (href: string) =>
     pathName.replace(/\/$/, "") === href.replace(/\/$/, "");
@@ -37,6 +46,7 @@ const Navbar = () => {
             In<span className="text-accent">Voice</span>
           </span>
         </div>
+
         <div className="flex space-x-4 items-center">
           {renderLinks("btn")}
           <UserButton />
