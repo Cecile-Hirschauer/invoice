@@ -4,7 +4,7 @@ import { Layers } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { checkAndAddUser } from "../action";
+import { checkAndAddUser } from "../actions";
 
 const Navbar = () => {
   const pathName = usePathname();
