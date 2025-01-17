@@ -66,6 +66,18 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({
   invoice,
   index,
 }) => {
+  const calculateTotal = () => {
+    const totalExcludingVAT = invoice?.lines?.reduce((acc, line) => {
+      const quantity = line.quantity ?? 0;
+      const unitPrice = line.unitPrice ?? 0;
+      return acc + quantity * unitPrice;
+    }, 0);
+
+    const VAT = totalExcludingVAT * (invoice.vatRate / 100);
+
+    return totalExcludingVAT + VAT;
+  };
+
   return (
     <div key={index} className="bg-base-200/90 space-y-2 p-5 rounded-xl shadow">
       <div className="flex justify-between items-center w-full">
@@ -82,7 +94,7 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({
           </div>
         </div>
         <div>
-          <div className="stat-value">11 000 </div>
+          <div className="stat-value">{calculateTotal()} € </div>
         </div>
       </div>
     </div>
