@@ -83,7 +83,7 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({
       <div className="flex justify-between items-center w-full">
         <div>{getStatusBadges(invoice.status)}</div>
         <Link className="btn btn-sm btn-accent" href={`/invoice/${invoice.id}`}>
-          Détails
+          Plus
           <LucideSquareArrowOutUpRight className="w-4 h-4" />
         </Link>
       </div>
@@ -96,6 +96,7 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({
         <div>
           <div className="stat-value">{calculateTotal().toFixed(2)} € </div>
         </div>
+        <div className="stat-desc">{invoice.name}</div>
       </div>
     </div>
   );
