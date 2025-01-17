@@ -1,9 +1,10 @@
 "use client";
+import { Invoice } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import confetti from "canvas-confetti";
 import { Layers } from "lucide-react";
 import { useEffect, useState } from "react";
-import { createEmptyInvoice } from "./actions";
+import { createEmptyInvoice, getInvoicesByEmail } from "./actions";
 import Wrapper from "./components/Wrapper";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
 
   const [invoiceName, setInvoiceName] = useState("");
   const [isValidName, setIsValidName] = useState(true);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
 
   useEffect(() => {
     setIsValidName(invoiceName.length <= 60);
@@ -41,6 +43,21 @@ export default function Home() {
     }
   };
 
+  const fetchInvoices = async () => {
+    try {
+      const data = await getInvoicesByEmail(email);
+      if (data) {
+        setInvoices(data);
+      }
+    } catch (error) {
+      console.error(`Erreur lors du chargement des factures: ${error}`);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [email]);
+
   return (
     <Wrapper>
       <div className="flex flex-col space-y-4">
@@ -59,6 +76,10 @@ export default function Home() {
               <Layers className="w-6 h-6" />
             </div>
           </div>
+          {invoices.length > 0 &&
+            invoices.map((invoice, index) => (
+              <div key={index}>{invoice.name}</div>
+            ))}
         </div>
 
         <dialog id="my_modal_3" className="modal">
