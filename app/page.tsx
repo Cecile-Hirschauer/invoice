@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 import { Layers } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createEmptyInvoice, getInvoicesByEmail } from "./actions";
+import InvoiceComponent from "./components/InvoiceComponent";
 import Wrapper from "./components/Wrapper";
 
 export default function Home() {
@@ -15,16 +16,31 @@ export default function Home() {
   const [isValidName, setIsValidName] = useState(true);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
 
+  const fetchInvoices = async () => {
+    try {
+      const data = await getInvoicesByEmail(email);
+      if (data) {
+        setInvoices(data);
+      }
+    } catch (error) {
+      console.error(`Erreur lors du chargement des factures: ${error}`);
+    }
+  };
+
   useEffect(() => {
     setIsValidName(invoiceName.length <= 60);
   }, [invoiceName]);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [email]);
 
   const handleCreateInvoice = async () => {
     try {
       if (email) {
         await createEmptyInvoice(email, invoiceName);
       }
-
+      fetchInvoices();
       setInvoiceName("");
 
       const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
@@ -42,21 +58,6 @@ export default function Home() {
       console.error(`Erreur lors de la création de la facture: ${error}`);
     }
   };
-
-  const fetchInvoices = async () => {
-    try {
-      const data = await getInvoicesByEmail(email);
-      if (data) {
-        setInvoices(data);
-      }
-    } catch (error) {
-      console.error(`Erreur lors du chargement des factures: ${error}`);
-    }
-  };
-
-  useEffect(() => {
-    fetchInvoices();
-  }, [email]);
 
   return (
     <Wrapper>
@@ -78,7 +79,9 @@ export default function Home() {
           </div>
           {invoices.length > 0 &&
             invoices.map((invoice, index) => (
-              <div key={index}>{invoice.name}</div>
+              <div key={index}>
+                <InvoiceComponent invoice={invoice} index={index} />
+              </div>
             ))}
         </div>
 
