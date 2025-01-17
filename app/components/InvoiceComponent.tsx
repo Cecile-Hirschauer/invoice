@@ -75,7 +75,16 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({
           <LucideSquareArrowOutUpRight className="w-4 h-4" />
         </Link>
       </div>
-      <div></div>
+      <div className="w-full">
+        <div>
+          <div className="stat-title">
+            <div className="uppercase text-sm">Fact-{invoice.id}</div>
+          </div>
+        </div>
+        <div>
+          <div className="stat-value">11 000 </div>
+        </div>
+      </div>
     </div>
   );
 };
